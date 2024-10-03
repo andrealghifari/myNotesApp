@@ -13,7 +13,6 @@
     justify-content: space-between;
     background-color: rgb(255, 197, 88);
     padding: 30px 0;
-
     .icons {
       display: flex;
       gap: 6px;
@@ -32,7 +31,7 @@
     form {
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 20px;
       align-items: center;
 
       input {
@@ -52,6 +51,7 @@
         
       }
       button {
+        margin-top: 15px;
         width: 70%;
         padding: 10px;
         outline: none;
@@ -64,6 +64,15 @@
             cursor: pointer;
         }
       }
+    }
+    p{
+        margin-top: 30px;
+        span{
+            color: rgb(52, 52, 186);
+            font-weight: 700;
+            text-decoration: underline;
+            cursor: pointer;
+        }
     }
   }
 }

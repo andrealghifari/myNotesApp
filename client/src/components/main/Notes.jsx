@@ -1,10 +1,10 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { deleteNote, emptyNote, getAllNotes, saveNotes } from "../../helper/api";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { format } from "date-fns";
 import noteImg from "../../assets/img/write-letter.png";
+import Alert from "../alert/Alert";
 
 const Notes = () => {
   const [listNotes, setListNotes] = useState([]);
@@ -73,7 +73,7 @@ const Notes = () => {
   console.log(`currentNoteId`, currentNoteId);
   return (
     <div className="notes" id="app">
-      <ToastContainer />
+      <Alert/>
       <div className="notes_sidebar">
         <span className="notes_icon">
           <img src={noteImg} alt="" />
