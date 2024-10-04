@@ -1,14 +1,26 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { deleteNote, emptyNote, getAllNotes, saveNotes } from "../../helper/api";
+import {
+  deleteNote,
+  emptyNote,
+  getAllNotes,
+  saveNotes,
+} from "../../helper/api";
 import "react-toastify/dist/ReactToastify.css";
 import { format } from "date-fns";
 import noteImg from "../../assets/img/write-letter.png";
 import Alert from "../alert/Alert";
+import { toast } from "react-toastify";
+import { auth } from "../../libs/firebase";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../libs/state/userStore";
+import { useNavigate } from "react-router-dom";
 
 const Notes = () => {
   const [listNotes, setListNotes] = useState([]);
   const [currentNoteId, setCurrentNoteId] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleAddNote = () => {
     const newNote = {
       id: Math.floor(Math.random() * 1000000),
@@ -18,6 +30,15 @@ const Notes = () => {
     };
     setListNotes((prevNotes) => [newNote, ...prevNotes]);
     setCurrentNoteId(newNote.id);
+  };
+  const handleLogout = () => {
+    auth
+      .signOut()
+      .then(() => {
+        dispatch(logoutUser());
+        navigate("/");
+      })
+      .catch((error) => console.error(error));
   };
 
   const saveNewNote = (e) => {
@@ -67,21 +88,25 @@ const Notes = () => {
       (a, b) => new Date(b.updated) - new Date(a.updated)
     );
     setListNotes(sortedData);
-    // emptyNote()
   }, []);
   console.log(listNotes);
   console.log(`currentNoteId`, currentNoteId);
   return (
     <div className="notes" id="app">
-      <Alert/>
+      <Alert />
       <div className="notes_sidebar">
         <span className="notes_icon">
           <img src={noteImg} alt="" />
           myNotes.
         </span>
-        <button className="notes_add" onClick={handleAddNote}>
-          Add a note
-        </button>
+        <div className="notes_button">
+          <button className="notes_add" onClick={handleAddNote}>
+            Add a note
+          </button>
+          <button className="notes_logout" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
         <div className="notes_list">
           {listNotes &&
             listNotes.map((note) => (

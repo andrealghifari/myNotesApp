@@ -1,18 +1,18 @@
-import Notes from "./components/main/Notes";
 import "./App.css";
-import Login from "./components/login/Login";
 import { BrowserRouter as Router } from "react-router-dom";
 import AppRoutes from "./routes";
+import { Provider } from "react-redux";
+import store from "./libs/state/store";
 
 function App() {
   return (
-    <Router>
-      <div className="container">
-        {/* <Notes /> */}
-        {/* <Login /> */}
-        <AppRoutes/>
-      </div>
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <div className="container">
+          <AppRoutes />
+        </div>
+      </Router>
+    </Provider>
   );
 }
 

@@ -6,8 +6,13 @@ import { toast } from "react-toastify";
 
 import noteImg from "../../assets/img/write-letter.png";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Notes from "../main/Notes";
+
 const Register = () => {
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.auth);
+
   const handleRegister = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -47,21 +52,27 @@ const Register = () => {
     }
   };
   return (
-    <div className="register">
-      <div className="item">
-        <div className="icons">
-          <img src={noteImg} alt="" />
-          <span>myNotes.</span>
+    <>
+      {currentUser ? (
+        <Notes />
+      ) : (
+        <div className="register">
+          <div className="item">
+            <div className="icons">
+              <img src={noteImg} alt="" />
+              <span>myNotes.</span>
+            </div>
+            <h3>Let's create an account!</h3>
+            <form onSubmit={handleRegister}>
+              <input type="text" name="username" placeholder="Username" />
+              <input type="email" name="email" placeholder="E-mail" />
+              <input type="password" name="password" placeholder="Password" />
+              <button type="submit">Sign Up</button>
+            </form>
+          </div>
         </div>
-        <h3>Let's create an account!</h3>
-        <form onSubmit={handleRegister}>
-          <input type="text" name="username" placeholder="Username" />
-          <input type="email" name="email" placeholder="E-mail" />
-          <input type="password" name="password" placeholder="Password" />
-          <button type="submit">Sign Up</button>
-        </form>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

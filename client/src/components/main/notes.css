@@ -39,19 +39,39 @@
         height: 40px;
       }
     }
-    .notes_add {
-      background: #009578;
-      border: none;
-      border-radius: 6px;
-      color: #ffff;
-      cursor: pointer;
-      font-size: 1.25em;
-      font-weight: 600;
+    .notes_button {
       padding: 20px;
       margin-bottom: 1em;
-      width: 100%;
-      &:hover {
-        background: #00af8c;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+
+      .notes_add {
+        background: #009578;
+        border: none;
+        border-radius: 6px;
+        color: #ffff;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 10px;
+        font-weight: 600;
+
+        &:hover {
+          background: #00af8c;
+        }
+      }
+      .notes_logout {
+        padding: 10px;
+        background: rgb(255, 44, 44);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        outline: none;
+        font-weight: 600;
+        cursor: pointer;
+        &:hover{
+          background-color: rgb(252, 87, 87);
+        }
       }
     }
 
