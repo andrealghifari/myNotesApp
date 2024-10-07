@@ -32,6 +32,10 @@ const Register = () => {
         id: response.user.uid,
       });
 
+      await setDoc(doc(db, "notes", response.user.uid), {
+        notes: [],
+      });
+
       navigate("/", { state: { registered: "success" } });
     } catch (error) {
       switch (error.code) {
@@ -60,7 +64,7 @@ const Register = () => {
           <div className="item">
             <div className="icons">
               <img src={noteImg} alt="" />
-              <span>myNotes.</span>
+              <span>MyNotes .</span>
             </div>
             <h3>Let's create an account!</h3>
             <form onSubmit={handleRegister}>

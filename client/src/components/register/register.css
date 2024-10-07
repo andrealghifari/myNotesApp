@@ -25,7 +25,8 @@
           font-style: italic;
           font-size: 2rem;
           text-decoration: underline;
-          letter-spacing: -.5px;
+          font-family: "Pacifico", cursive;
+          letter-spacing: 1px;
         }
       }
       form {

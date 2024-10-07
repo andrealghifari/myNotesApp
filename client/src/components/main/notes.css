@@ -3,13 +3,8 @@
   display: flex;
   height: 100%;
   font-family: sans-serif;
+  /* background-color: red; */
 
-  .brand {
-    font-size: 2rem;
-    font-style: oblique;
-    color: antiquewhite;
-    font-weight: 700;
-  }
   .notes_sidebar {
     display: flex;
     flex-direction: column;
@@ -18,21 +13,23 @@
     flex-shrink: 0;
     padding: 1em;
     max-width: 300px;
-    background-color: orange;
+    background-color: rgb(251, 181, 52);
     overflow-y: auto;
     height: 100vh;
     scrollbar-color: rgb(255, 255, 255) rgba(85, 91, 209, 0.2);
-
+    scrollbar-width: thin;
     .notes_icon {
       display: flex;
       flex-direction: row;
       align-items: center;
-      font-family: "Nunito Sans", sans-serif;
+      font-family: "Pacifico", cursive;
       font-size: 1.5rem;
       font-weight: 800;
       font-style: italic;
-      letter-spacing: -1px;
+      letter-spacing: 1.5px;
       gap: 2px;
+      padding: 5px;
+      text-decoration: underline;
 
       img {
         width: 40px;
@@ -40,7 +37,7 @@
       }
     }
     .notes_button {
-      padding: 20px;
+      padding: 10px;
       margin-bottom: 1em;
       display: flex;
       justify-content: space-between;
@@ -54,7 +51,7 @@
         cursor: pointer;
         font-size: 16px;
         padding: 10px;
-        font-weight: 600;
+        /* font-weight: 600; */
 
         &:hover {
           background: #00af8c;
@@ -67,12 +64,16 @@
         border: none;
         border-radius: 6px;
         outline: none;
-        font-weight: 600;
+        /* font-weight: 600; */
         cursor: pointer;
         &:hover{
           background-color: rgb(252, 87, 87);
         }
       }
+    }
+    .notes_welcome{
+      font-weight: 500;
+      font-family: "Pacifico", cursive;     
     }
 
     .notes_list {
@@ -109,7 +110,6 @@
     padding: 2em 3em;
     flex-grow: 1;
     margin: 0;
-
     form {
       display: flex;
       flex-direction: column;

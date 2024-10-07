@@ -1,35 +1,33 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import {
-  deleteNote,
-  emptyNote,
-  getAllNotes,
-  saveNotes,
-} from "../../helper/api";
+import { deleteNote, emptyNote, saveNotes } from "../../helper/api";
 import "react-toastify/dist/ReactToastify.css";
 import { format } from "date-fns";
 import noteImg from "../../assets/img/write-letter.png";
 import Alert from "../alert/Alert";
 import { toast } from "react-toastify";
-import { auth } from "../../libs/firebase";
-import { useDispatch } from "react-redux";
+import { auth, db } from "../../libs/firebase";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../libs/state/userStore";
 import { useNavigate } from "react-router-dom";
+import { arrayUnion, doc, onSnapshot, updateDoc } from "firebase/firestore";
 
 const Notes = () => {
   const [listNotes, setListNotes] = useState([]);
   const [currentNoteId, setCurrentNoteId] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.auth);
+
   const handleAddNote = () => {
     const newNote = {
-      id: Math.floor(Math.random() * 1000000),
+      noteId: Math.floor(Math.random() * 1000000),
       title: "",
       body: "",
       updated: new Date().toISOString(),
     };
     setListNotes((prevNotes) => [newNote, ...prevNotes]);
-    setCurrentNoteId(newNote.id);
+    setCurrentNoteId(newNote.noteId);
   };
   const handleLogout = () => {
     auth
@@ -48,20 +46,16 @@ const Notes = () => {
 
     if (title && body) {
       const updatedNote = {
-        id: currentNoteId,
+        noteId: currentNoteId,
         title,
         body,
         updated: new Date().toISOString(),
       };
-      //update note in the list
-      setListNotes((prevNotes) =>
-        prevNotes.map((note) =>
-          note.id === currentNoteId ? updatedNote : note
-        )
-      );
 
-      //save updated data to the server
-      saveNotes(updatedNote);
+      //save updated data to the firestore
+      const updatedNotes = saveNotes(updatedNote, currentUser.id);
+
+      console.log(`saved notes: `, updatedNotes);
 
       toast.success("Successfully saved!", {
         position: "top-right",
@@ -83,22 +77,38 @@ const Notes = () => {
   };
 
   useEffect(() => {
-    const data = getAllNotes();
-    const sortedData = data.sort(
-      (a, b) => new Date(b.updated) - new Date(a.updated)
-    );
-    setListNotes(sortedData);
-  }, []);
-  console.log(listNotes);
-  console.log(`currentNoteId`, currentNoteId);
+    const unsub = onSnapshot(doc(db, "notes", currentUser.id), async (res) => {
+      if (res.exists()) {
+        const dataNotes = res.data().notes || [];
+        const sortedData = dataNotes.sort(
+          (a, b) => new Date(b.updated) - new Date(a.updated)
+        );
+        setListNotes(sortedData);
+      } else {
+        // console.log("No notes document found for this user");
+        setListNotes([]); // Clear the list if no notes are found
+      }
+    });
+
+    return () => {
+      unsub();
+    };
+  }, [currentUser]);
+  // console.log(listNotes);
+  // console.log(`currentNoteId`, currentNoteId);
+  // console.log(`currentUser: `, currentUser);
   return (
     <div className="notes" id="app">
       <Alert />
       <div className="notes_sidebar">
         <span className="notes_icon">
           <img src={noteImg} alt="" />
-          myNotes.
+          MyNotes.
         </span>
+        <div className="notes_welcome">
+          <h2>Welcome {currentUser.username} </h2>
+          <p>Share the brilliant ideas!</p>
+        </div>
         <div className="notes_button">
           <button className="notes_add" onClick={handleAddNote}>
             Add a note
@@ -107,13 +117,14 @@ const Notes = () => {
             Logout
           </button>
         </div>
+       
         <div className="notes_list">
           {listNotes &&
             listNotes.map((note) => (
               <div
                 className="notes_list_item notes_list_item--selected"
-                key={note.id}
-                onClick={() => setCurrentNoteId(note.id)}
+                key={note.noteId}
+                onClick={() => setCurrentNoteId(note.noteId)}
               >
                 <div className="notes_small_title" name="notes_small_title">
                   {note.title === "" ? "Enter a title." : note.title}
@@ -138,18 +149,39 @@ const Notes = () => {
               name="title"
               type="text"
               placeholder="Enter a title."
-              defaultValue={
-                listNotes.find((note) => note.id === currentNoteId)?.title || ""
+              value={
+                listNotes.find((note) => note.noteId === currentNoteId)
+                  ?.title || ""
               }
+              onChange={(e) => {
+                const updatedTitle = e.target.value;
+                setListNotes((prevNotes) =>
+                  prevNotes.map((note) =>
+                    note.noteId === currentNoteId
+                      ? { ...note, title: updatedTitle }
+                      : note
+                  )
+                );
+              }}
             />
             <textarea
               className="notes_body"
               name="body"
-              id=""
               placeholder="Share your thoughtful mind.."
-              defaultValue={
-                listNotes.find((note) => note.id === currentNoteId)?.body || ""
+              value={
+                listNotes.find((note) => note.noteId === currentNoteId)?.body ||
+                ""
               }
+              onChange={(e) => {
+                const updatedBody = e.target.value;
+                setListNotes((prevNotes) =>
+                  prevNotes.map((note) =>
+                    note.noteId === currentNoteId
+                      ? { ...note, body: updatedBody }
+                      : note
+                  )
+                );
+              }}
             ></textarea>
             <button className="notes_save" type="submit">
               Save

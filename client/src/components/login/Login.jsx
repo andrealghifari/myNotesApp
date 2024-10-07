@@ -16,7 +16,6 @@ const Login = () => {
   const { currentUser } = useSelector((state) => state.auth);
 
   const statusRegistered = location?.state?.registered;
-  console.log(statusRegistered);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -28,14 +27,12 @@ const Login = () => {
         email,
         password
       );
-      console.log("credential", credential);
       const userData = credential.user;
 
       //dispatch action to fetchUserInfo to send uid
       dispatch(fetchUserInfo(userData.uid));
       navigate("/notes");
     } catch (error) {
-      console.log(error);
       switch (error.code) {
         case "auth/invalid-credential":
           toast.error("Invalid Credential User", {
@@ -82,7 +79,7 @@ const Login = () => {
           <div className="item">
             <div className="icons">
               <img src={noteImg} alt="" />
-              <span>myNotes.</span>
+              <span>MyNotes .</span>
             </div>
             <h3>Welcome Back,</h3>
             <form onSubmit={handleLogin}>
